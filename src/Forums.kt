@@ -7,9 +7,9 @@ class Forums {
 }
 
 class LastTopic {
-  @Selector(".desc", attr = "innerHtml") lateinit var htmlDesc: String
   @Selector("a.subtitle") lateinit var title: String
   @Selector("a ~ a ~ a") lateinit var author: String
+  @Selector(".desc", format = "([0-9\\.]+ - [0-9:]+)") lateinit var date: String
 }
 
 fun main(args: Array<String>) {
@@ -27,6 +27,7 @@ fun main(args: Array<String>) {
           println("Forum id: ${forums.ids[index]}")
           println("Last topic: ${forums.topics[index].title}")
           println("Author: ${forums.topics[index].author}")
+          println("Date: ${forums.topics[index].date}")
         }
 
       }, { throwable ->
