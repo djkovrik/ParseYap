@@ -5,7 +5,7 @@ class ForumPage {
   lateinit var forumTitle: String
   @Selector("a[href~=.*/forum\\d+/].title", attr = "href", defValue = "0")
   lateinit var forumId: String
-  @Selector("a[title~=Страница: \\d+]", attr = "title", format = "(\\d+)", defValue = "0")
+  @Selector("a[title~=.*: \\d+]:contains(Последняя)", attr = "title", format = "(\\d+)", defValue = "0")
   lateinit var totalPages: String
   @Selector("table tr:has(td.row4)")
   lateinit var topics: List<Topic>
@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadForumPage(forumId = 2, startTopicNumber = 0, sortingMode = "last_post")
+      .loadForumPage(forumId = 1, startTopicNumber = 0, sortingMode = "last_post")
 
       .subscribe({ forumPage ->
 
