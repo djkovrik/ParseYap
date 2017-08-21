@@ -5,7 +5,7 @@ class ForumPage {
   lateinit var forumTitle: String
   @Selector("a[href~=.*/forum\\d+/].title", attr = "href", defValue = "0")
   lateinit var forumId: String
-  @Selector("a[title~=Страница: \\d+]", attr = "title", defValue = "0")
+  @Selector("a[title~=Страница: \\d+]", attr = "title", format = "(\\d+)", defValue = "0")
   lateinit var totalPages: String
   @Selector("table tr:has(td.row4)")
   lateinit var topics: List<Topic>
