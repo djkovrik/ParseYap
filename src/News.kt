@@ -8,23 +8,23 @@ class News {
 }
 
 class NewsHead {
-  @Selector(".subtitle") lateinit var title: String
+  @Selector(".subtitle", defValue = "Unknown") lateinit var title: String
   @Selector(".subtitle", attr = "href") lateinit var link: String
   @Selector(".rating-short-value > a", defValue = "") lateinit var rating: String
 }
 
 class NewsContent {
-  @Selector("[id~=news_.*]", attr = "innerHtml") lateinit var description: String
+  @Selector("[id~=news_.*]", attr = "innerHtml", defValue = "Unknown") lateinit var description: String
   @Selector("img[src]", attr = "src") lateinit var images: List<String>
   @Selector("iframe[src]", attr = "src") lateinit var videos: List<String>
 }
 
 class NewsBottom {
-  @Selector(".icon-user > a") lateinit var author: String
+  @Selector(".icon-user > a", defValue = "Unknown") lateinit var author: String
   @Selector(".icon-user > a", attr = "href") lateinit var authorLink: String
-  @Selector(".icon-date") lateinit var date: String
-  @Selector(".icon-forum > a") lateinit var forumName: String
-  @Selector("span") lateinit var comments: String
+  @Selector(".icon-date", defValue = "Unknown") lateinit var date: String
+  @Selector(".icon-forum > a", defValue = "Unknown") lateinit var forumName: String
+  @Selector("span", defValue = "0") lateinit var comments: String
 }
 
 
