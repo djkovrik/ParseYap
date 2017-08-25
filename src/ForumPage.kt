@@ -27,7 +27,6 @@ fun main(args: Array<String>) {
   createRetrofit()
       .create(YapLoader::class.java)
       .loadForumPage(forumId = 1, startTopicNumber = 32280, sortingMode = "last_post")
-
       .subscribe({ forumPage ->
 
         println("Title: ${forumPage.forumTitle}")
