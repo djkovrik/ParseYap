@@ -24,6 +24,7 @@ class NewsBottom {
   @Selector(".icon-user > a", attr = "href") lateinit var authorLink: String
   @Selector(".icon-date", defValue = "Unknown") lateinit var date: String
   @Selector(".icon-forum > a", defValue = "Unknown") lateinit var forumName: String
+  @Selector(".icon-forum > a", attr="href", defValue = "Unknown") lateinit var forumLink: String
   @Selector("span", defValue = "0") lateinit var comments: String
 }
 
@@ -52,7 +53,8 @@ fun main(args: Array<String>) {
           println("Author: ${news.bottoms[index].author}")
           println("Author link: ${news.bottoms[index].authorLink}")
           println("Date: ${news.bottoms[index].date}")
-          println("Forum Title: ${news.bottoms[index].forumName}")
+          println("Forum title: ${news.bottoms[index].forumName}")
+          println("Forum link: ${news.bottoms[index].forumLink}")
           println("Comments: ${news.bottoms[index].comments}")
           println("------------------------")
         }
