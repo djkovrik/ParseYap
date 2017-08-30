@@ -26,7 +26,6 @@ class TopicPost {
   lateinit var postDate: String
   @Selector("span[class~=rank-\\w+]", defValue = "")
   lateinit var postRank: String
-  // TODO() Content needs cleaning with jsoup tags whitelist
   @Selector("td[width*=100%][valign*=top]", attr = "innerHtml", defValue = "")
   lateinit var postContent: String
 }
@@ -53,7 +52,9 @@ fun main(args: Array<String>) {
           println("Author messages count: ${it.authorMessagesCount}")
           println("Post date: ${it.postDate}")
           println("Post rank: ${it.postRank}")
-//          println("Post content: ${it.postContent}")
+
+          ParsedPost(it.postContent).printContent()
+
           println(" ---------- ")
         }
 
