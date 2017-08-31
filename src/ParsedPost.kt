@@ -40,12 +40,12 @@ class ParsedPost(html: String,
             element.select("span[style~=grey]").remove()
             element.select("img").not("[src*=emoticons]").remove()
             element.select("a").remove()
-            content.add(PostText(text = element.html().cleanExtraTags()))
+            content.add(PostText(text = element.html().cleanExtraTags().trimLinebreakTags()))
           }
 
           // Quotes +
           if (element.attributes().toString().contains("QUOTE") && !element.text().startsWith("Цитата")) {
-            content.add(PostQuote(text = element.html().cleanExtraTags()))
+            content.add(PostQuote(text = element.html().cleanExtraTags().trimLinebreakTags()))
           }
 
           // Quote authors +
@@ -104,13 +104,19 @@ class ParsedPost(html: String,
 
     return Jsoup
         .clean(this, tagsWhiteList)
+        // Replace html spaces
+        .replace("&nbsp;", " ")
         // Replace extra <br>
-        .replace(Regex("<br>(\\s+)?\\R<br>"), "<br>")
+        .replace(Regex("(<br>(\\s+)?\\R)+", RegexOption.MULTILINE), "")
         // Replace smile links with filename only
         .replace(Regex("<img src=.*/(\\w+).*>"), { matchResult ->
           val replacement = matchResult.groups[1]?.value ?: ""
           String.format("<img src='%s'>", replacement)
         })
+  }
+
+  private fun String.trimLinebreakTags(): String {
+    return this.removePrefix("<br>").removeSuffix("<br>").trim()
   }
 }
 
