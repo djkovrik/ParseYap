@@ -9,8 +9,10 @@ class ParsedPost(html: String,
 
   companion object {
     val tagsToSkip = setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i")
-    val attrsToSkip = setOf("rating", "emoticons", "clear")
-    val tagsWhiteList: Whitelist = Whitelist().addTags("i", "u", "b", "br")
+    val attrsToSkip = setOf("rating", "clear")
+    val tagsWhiteList: Whitelist = Whitelist()
+        .addTags("i", "u", "b", "br", "img")
+        .addAttributes("img", "src")
   }
 
   init {
@@ -36,6 +38,8 @@ class ParsedPost(html: String,
             element.select("div[rel=rating]").remove()
             element.select("span.edit").remove()
             element.select("span[style~=grey]").remove()
+            element.select("img").not("[src*=emoticons]").remove()
+            element.select("a").remove()
             content.add(PostText(text = element.html().cleanExtraTags()))
           }
 
@@ -50,7 +54,9 @@ class ParsedPost(html: String,
           }
 
           // Images +
-          if (element.tagName() == "img" && element.hasAttr("src")) {
+          if (element.tagName() == "img"
+              && element.hasAttr("src")
+              && !element.attr("src").contains("emoticons")) {
             images.add(element.attr("src"))
           }
 
@@ -98,8 +104,13 @@ class ParsedPost(html: String,
 
     return Jsoup
         .clean(this, tagsWhiteList)
-        // TODO() Improve regex for greedy variation
+        // Replace extra <br>
         .replace(Regex("<br>(\\s+)?\\R<br>"), "<br>")
+        // Replace smile links with filename only
+        .replace(Regex("<img src=.*/(\\w+).*>"), { matchResult ->
+          val replacement = matchResult.groups[1]?.value ?: ""
+          String.format("<img src='%s'>", replacement)
+        })
   }
 }
 
