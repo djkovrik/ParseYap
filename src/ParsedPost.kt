@@ -8,9 +8,29 @@ class ParsedPost(html: String,
                  val videos: MutableList<String> = ArrayList()) {
 
   companion object {
-    val tagsToSkip = setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i")
-    val attrsToSkip = setOf("rating", "clear")
-    val tagsWhiteList: Whitelist = Whitelist()
+    private const val TEXT_SELECTOR = "postcolor"
+    private const val RATING_SELECTOR = "div[rel=rating]"
+    private const val EDITED_TIME_SELECTOR = "span.edit"
+    private const val CLIENT_SELECTOR = "span[style~=grey]"
+    private const val EMOTICON_SRC_SELECTOR = "[src*=emoticons]"
+    private const val EMOTICON_SELECTOR = "emoticons"
+    private const val QUOTE_SELECTOR = "QUOTE"
+    private const val SPOILER_SELECTOR = "SPOILER"
+    private const val QUOTE_START_TEXT = "Цитата"
+    private const val IFRAME_TAG = "iframe"
+    private const val IMG_TAG = "img"
+    private const val TD_TAG = "td"
+    private const val A_TAG = "a"
+    private const val SRC_ATTR = "src"
+    private const val HREF_ATTR = "href"
+    private const val QUOTE_AUTHOR_MARKER = "@"
+    private const val QUOTE_EMPTY_MARKER = "Цитата"
+    private const val QUOTE_AUTHOR_LINE_LAST_CHAR = ")"
+
+    private val tagsToSkip =
+        setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i", "u")
+    private val attrsToSkip = setOf("rating", "clear")
+    private val contentWhitelist: Whitelist = Whitelist()
         .addTags("i", "u", "b", "br", "img")
         .addAttributes("img", "src")
   }
@@ -32,13 +52,12 @@ class ParsedPost(html: String,
           notSkip
         }
         .forEach { element ->
-
-          // Texts +
-          if (element.hasClass("postcolor")) {
-            element.select("div[rel=rating]").remove()
-            element.select("span.edit").remove()
-            element.select("span[style~=grey]").remove()
-            element.select("img").not("[src*=emoticons]").remove()
+          // Texts
+          if (element.hasClass(TEXT_SELECTOR)) {
+            element.select(RATING_SELECTOR).remove()
+            element.select(EDITED_TIME_SELECTOR).remove()
+            element.select(CLIENT_SELECTOR).remove()
+            element.select(IMG_TAG).not(EMOTICON_SRC_SELECTOR).remove()
 
             element.html().cleanExtraTags().trimLinebreakTags().apply {
               if (this.isNotEmpty())
@@ -46,47 +65,55 @@ class ParsedPost(html: String,
             }
           }
 
-          // Quotes +
-          if (element.attributes().toString().contains("QUOTE") && !element.text().startsWith("Цитата")) {
+          // Quotes
+          if (element.attributes().toString().contains(QUOTE_SELECTOR)
+              && !element.text().startsWith(QUOTE_START_TEXT)) {
             element.html().cleanExtraTags().trimLinebreakTags().apply {
               if (this.isNotEmpty())
                 content.add(PostQuote(text = this))
             }
           }
 
-          // Quote authors +
-          if (element.text().contains("@") && element.text().endsWith(")")) {
+          // Quote authors
+          if (element.text().contains(QUOTE_AUTHOR_MARKER) &&
+              element.text().endsWith(QUOTE_AUTHOR_LINE_LAST_CHAR)) {
+            content.add(PostQuoteAuthor(text = element.html()))
+          } else if (element.text() == QUOTE_EMPTY_MARKER) {
             content.add(PostQuoteAuthor(text = element.html()))
           }
 
           // Spoilers
-          if (element.tagName() == "td" && element.attributes().toString().contains("SPOILER")) {
-            content.add(PostHiddenText(text = element.html().cleanExtraTags().trimLinebreakTags()))
+          if (element.tagName() == TD_TAG &&
+              element.attributes().toString().contains(SPOILER_SELECTOR)) {
+            element.html().cleanExtraTags().trimLinebreakTags().apply {
+              if (this.isNotEmpty())
+                content.add(PostHiddenText(text = this))
+            }
           }
 
-
-          // Images +
-          if (element.tagName() == "img"
-              && element.hasAttr("src")
-              && !element.attr("src").contains("emoticons")) {
-            images.add(element.attr("src"))
+          // Images
+          if (element.tagName() == IMG_TAG &&
+              element.hasAttr(SRC_ATTR) &&
+              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR)) {
+            images.add(element.attr(SRC_ATTR))
           }
 
-          // Videos +
-          if (element.tagName() == "iframe" && element.hasAttr("src")) {
-            videos.add(element.attr("src"))
+          // Videos
+          if (element.tagName() == IFRAME_TAG &&
+              element.hasAttr(SRC_ATTR)) {
+            videos.add(element.attr(SRC_ATTR))
           }
 
-          // P.S. +
+          // P.S.
           if (element.attributes().toString().contains(Regex("edit|grey"))) {
             content.add(PostScript(
                 text = element.html()))
           }
 
-          // Links +
-          if (element.tagName() == "a" && element.text().isNotEmpty()) {
+          // Links
+          if (element.tagName() == A_TAG && element.text().isNotEmpty()) {
             content.add(PostLink(
-                url = element.attr("href"),
+                url = element.attr(HREF_ATTR),
                 title = element.text()))
           }
         }
@@ -114,13 +141,12 @@ class ParsedPost(html: String,
   }
 
   private fun String.cleanExtraTags(): String {
-
     return Jsoup
-        .clean(this, tagsWhiteList)
+        .clean(this, contentWhitelist)
         // Replace html spaces
         .replace("&nbsp;", " ")
         // Replace extra <br>
-        .replace(Regex("(<br>(\\s+)?\\R)+", RegexOption.MULTILINE), "")
+//        .replace(Regex("(<br>(\\s+)?\\R)+", RegexOption.MULTILINE), "")
         // Replace smile links with filename only
         .replace(Regex("<img src=.*/(\\w+).*>"), { matchResult ->
           val replacement = matchResult.groups[1]?.value ?: ""
