@@ -34,18 +34,24 @@ class ParsedPost(html: String,
         .forEach { element ->
 
           // Texts +
-          if (element.hasClass("postcolor") && element.text().isNotEmpty()) {
+          if (element.hasClass("postcolor")) {
             element.select("div[rel=rating]").remove()
             element.select("span.edit").remove()
             element.select("span[style~=grey]").remove()
             element.select("img").not("[src*=emoticons]").remove()
-            element.select("a").remove()
-            content.add(PostText(text = element.html().cleanExtraTags().trimLinebreakTags()))
+
+            element.html().cleanExtraTags().trimLinebreakTags().apply {
+              if (this.isNotEmpty())
+                content.add(PostText(text = this))
+            }
           }
 
           // Quotes +
           if (element.attributes().toString().contains("QUOTE") && !element.text().startsWith("Цитата")) {
-            content.add(PostQuote(text = element.html().cleanExtraTags().trimLinebreakTags()))
+            element.html().cleanExtraTags().trimLinebreakTags().apply {
+              if (this.isNotEmpty())
+                content.add(PostQuote(text = this))
+            }
           }
 
           // Quote authors +
