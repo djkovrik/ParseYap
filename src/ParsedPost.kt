@@ -53,6 +53,12 @@ class ParsedPost(html: String,
             content.add(PostQuoteAuthor(text = element.html()))
           }
 
+          // Spoilers
+          if (element.tagName() == "td" && element.attributes().toString().contains("SPOILER")) {
+            content.add(PostHiddenText(text = element.html().cleanExtraTags().trimLinebreakTags()))
+          }
+
+
           // Images +
           if (element.tagName() == "img"
               && element.hasAttr("src")
@@ -86,6 +92,7 @@ class ParsedPost(html: String,
         is PostText -> println("Post text: ${it.text}")
         is PostQuote -> println("Quote block: ${it.text}")
         is PostQuoteAuthor -> println("Quote author block: ${it.text}")
+        is PostHiddenText -> println("Spoiler text: ${it.text}")
         is PostScript -> println("P.S.: ${it.text}")
         is PostLink -> println("Link: ${it.url}, Link title: ${it.title}")
       }
@@ -127,6 +134,8 @@ class PostText(val text: String) : Content
 class PostQuote(val text: String) : Content
 
 class PostQuoteAuthor(val text: String) : Content
+
+class PostHiddenText(val text: String) : Content
 
 class PostScript(val text: String) : Content
 
