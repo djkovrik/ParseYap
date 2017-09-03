@@ -24,8 +24,7 @@ class ParsedPost(html: String,
     private const val SRC_ATTR = "src"
     private const val HREF_ATTR = "href"
     private const val QUOTE_AUTHOR_MARKER = "@"
-    private const val QUOTE_EMPTY_MARKER = "Цитата"
-    private const val QUOTE_AUTHOR_LINE_LAST_CHAR = ")"
+    private const val QUOTE_MARKER = "Цитата"
 
     private val tagsToSkip =
         setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i", "u")
@@ -66,8 +65,8 @@ class ParsedPost(html: String,
           }
 
           // Quotes
-          if (element.attributes().toString().contains(QUOTE_SELECTOR)
-              && !element.text().startsWith(QUOTE_START_TEXT)) {
+          if (element.attributes().toString().contains(QUOTE_SELECTOR) &&
+              !element.text().startsWith(QUOTE_START_TEXT)) {
             element.html().cleanExtraTags().trimLinebreakTags().apply {
               if (this.isNotEmpty())
                 content.add(PostQuote(text = this))
@@ -76,9 +75,9 @@ class ParsedPost(html: String,
 
           // Quote authors
           if (element.text().contains(QUOTE_AUTHOR_MARKER) &&
-              element.text().endsWith(QUOTE_AUTHOR_LINE_LAST_CHAR)) {
+              !element.html().contains(Regex("\\R"))) {
             content.add(PostQuoteAuthor(text = element.html()))
-          } else if (element.text() == QUOTE_EMPTY_MARKER) {
+          } else if (element.text() == QUOTE_MARKER) {
             content.add(PostQuoteAuthor(text = element.html()))
           }
 

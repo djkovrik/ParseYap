@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadTopicPage(forumId = 1, topicId = 1644075, startPage = 125)
+      .loadTopicPage(forumId = 1, topicId = 1654170, startPage = 0)
       .subscribe({ topicPage ->
 
         println("Title: ${topicPage.topicTitle}")
