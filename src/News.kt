@@ -17,6 +17,7 @@ class NewsContent {
   @Selector("[id~=news_.*]", attr = "innerHtml", defValue = "Unknown") lateinit var description: String
   @Selector("img[src]", attr = "src") lateinit var images: List<String>
   @Selector("iframe[src]", attr = "src") lateinit var videos: List<String>
+  @Selector("iframe[src]", attr = "outerHtml") lateinit var videosRaw: List<String>
 }
 
 class NewsBottom {
@@ -50,6 +51,7 @@ fun main(args: Array<String>) {
           println("Description: ${news.contents[index].description}")
           println("Images: ${news.contents[index].images}")
           println("Videos: ${news.contents[index].videos}")
+          println("Videos raw: ${news.contents[index].videosRaw}")
           println("Author: ${news.bottoms[index].author}")
           println("Author link: ${news.bottoms[index].authorLink}")
           println("Date: ${news.bottoms[index].date}")
