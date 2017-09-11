@@ -14,6 +14,7 @@ class ForumPage {
 class Topic {
   @Selector("a.subtitle", defValue = "Unknown") lateinit var title: String
   @Selector("a.subtitle", attr = "href") lateinit var link: String
+  @Selector("img[src*=pinned]", attr="src", defValue = "") lateinit var isPinned: String
   @Selector("td[class~=row(2|4)] > a", defValue = "Unknown") lateinit var author: String
   @Selector("td[class~=row(2|4)] > a", attr = "href") lateinit var authorLink: String
   @Selector("div.rating-short-value", defValue = "0") lateinit var rating: String
@@ -26,7 +27,7 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadForumPage(forumId = 1, startTopicNumber = 32280, sortingMode = "last_post")
+      .loadForumPage(forumId = 2, startTopicNumber = 0, sortingMode = "last_post")
       .subscribe({ forumPage ->
 
         println("Title: ${forumPage.forumTitle}")
@@ -38,6 +39,7 @@ fun main(args: Array<String>) {
         forumPage.topics.forEach {
           println("Title: ${it.title}")
           println("Link: ${it.link}")
+          println("Is Pinned: ${it.isPinned}")
           println("Author: ${it.author}")
           println("Author link: ${it.authorLink}")
           println("Rating: ${it.rating}")
