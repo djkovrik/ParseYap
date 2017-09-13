@@ -14,6 +14,7 @@ class ParsedPost(html: String,
     private const val CLIENT_SELECTOR = "span[style~=grey]"
     private const val EMOTICON_SRC_SELECTOR = "[src*=emoticons]"
     private const val EMOTICON_SELECTOR = "emoticons"
+    private const val WARNING_SELECTOR = "html/bot"
     private const val QUOTE_SELECTOR = "QUOTE"
     private const val SPOILER_SELECTOR = "SPOILER"
     private const val QUOTE_START_TEXT = "Цитата"
@@ -30,8 +31,9 @@ class ParsedPost(html: String,
         setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i", "u")
     private val attrsToSkip = setOf("rating", "clear")
     private val contentWhitelist: Whitelist = Whitelist()
-        .addTags("i", "u", "b", "br", "img")
+        .addTags("i", "u", "b", "br", "img", "span")
         .addAttributes("img", "src")
+        .addAttributes("span", "style")
   }
 
   init {
@@ -93,7 +95,8 @@ class ParsedPost(html: String,
           // Images
           if (element.tagName() == IMG_TAG &&
               element.hasAttr(SRC_ATTR) &&
-              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR)) {
+              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR) &&
+              !element.attr(SRC_ATTR).contains(WARNING_SELECTOR)) {
             images.add(element.attr(SRC_ATTR))
           }
 
