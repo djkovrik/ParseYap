@@ -5,7 +5,8 @@ import java.util.*
 class ParsedPost(html: String,
                  val content: MutableList<Content> = ArrayList(),
                  val images: MutableList<String> = ArrayList(),
-                 val videos: MutableList<String> = ArrayList()) {
+                 val videos: MutableList<String> = ArrayList(),
+                 val videosRaw: MutableList<String> = ArrayList()) {
 
   companion object {
     private const val TEXT_SELECTOR = "postcolor"
@@ -14,7 +15,6 @@ class ParsedPost(html: String,
     private const val CLIENT_SELECTOR = "span[style~=grey]"
     private const val EMOTICON_SRC_SELECTOR = "[src*=emoticons]"
     private const val EMOTICON_SELECTOR = "emoticons"
-    private const val WARNING_SELECTOR = "html/bot"
     private const val QUOTE_SELECTOR = "QUOTE"
     private const val SPOILER_SELECTOR = "SPOILER"
     private const val QUOTE_START_TEXT = "Цитата"
@@ -31,9 +31,8 @@ class ParsedPost(html: String,
         setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i", "u")
     private val attrsToSkip = setOf("rating", "clear")
     private val contentWhitelist: Whitelist = Whitelist()
-        .addTags("i", "u", "b", "br", "img", "span")
+        .addTags("i", "u", "b", "br", "img")
         .addAttributes("img", "src")
-        .addAttributes("span", "style")
   }
 
   init {
@@ -67,8 +66,8 @@ class ParsedPost(html: String,
           }
 
           // Quotes
-          if (element.attributes().toString().contains(QUOTE_SELECTOR) &&
-              !element.text().contains(QUOTE_START_TEXT)) {
+          if (element.attributes().toString().contains(QUOTE_SELECTOR)
+              && !element.text().contains(QUOTE_START_TEXT)) {
             element.html().cleanExtraTags().trimLinebreakTags().apply {
               if (this.isNotEmpty())
                 content.add(PostQuote(text = this))
@@ -95,8 +94,7 @@ class ParsedPost(html: String,
           // Images
           if (element.tagName() == IMG_TAG &&
               element.hasAttr(SRC_ATTR) &&
-              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR) &&
-              !element.attr(SRC_ATTR).contains(WARNING_SELECTOR)) {
+              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR)) {
             images.add(element.attr(SRC_ATTR))
           }
 
@@ -104,6 +102,7 @@ class ParsedPost(html: String,
           if (element.tagName() == IFRAME_TAG &&
               element.hasAttr(SRC_ATTR)) {
             videos.add(element.attr(SRC_ATTR))
+            videosRaw.add(element.toString())
           }
 
           // P.S.
