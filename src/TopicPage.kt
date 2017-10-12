@@ -28,6 +28,8 @@ class TopicPost {
   lateinit var postRank: String
   @Selector("td[width*=100%][valign*=top]", attr = "innerHtml", defValue = "")
   lateinit var postContent: String
+  @Selector("a[name~=entry]", attr = "outerHtml", format = "entry(\\d+)", defValue = "0")
+  lateinit var postId: String
 }
 
 fun main(args: Array<String>) {
@@ -52,6 +54,7 @@ fun main(args: Array<String>) {
           println("Author messages count: ${it.authorMessagesCount}")
           println("Post date: ${it.postDate}")
           println("Post rank: ${it.postRank}")
+          println("Post id: ${it.postId}")
 
           ParsedPost(it.postContent).printContent()
 
