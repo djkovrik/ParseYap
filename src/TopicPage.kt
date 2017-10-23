@@ -7,14 +7,19 @@ class TopicPage {
   lateinit var topicLink: String
   @Selector(".rating-value", defValue = "0")
   lateinit var topicRank: String
+  @Selector("input[name~=auth_key]", attr = "outerHtml", format = "value=\"([a-z0-9]+)\"", defValue = "")
+  lateinit var authKey: String
+  @Selector("table.row3")
+  lateinit var navigation: TopicNavigationPanel
+  @Selector("table[id~=p_row_\\d+]:has(.normalname)")
+  lateinit var posts: List<TopicPost>
+}
+
+class TopicNavigationPanel {
   @Selector("td[nowrap=nowrap]:has(a[onclick])", format = "\\[(\\d+)\\]", defValue = "1")
   lateinit var currentPage: String
   @Selector("td[nowrap=nowrap]:has(a[onclick])", format = "(\\d+)", defValue = "1")
   lateinit var totalPages: String
-  @Selector("table[id~=p_row_\\d+]:has(.normalname)")
-  lateinit var posts: List<TopicPost>
-  @Selector("input[name~=auth_key]", attr = "outerHtml", format = "value=\"([a-z0-9]+)\"", defValue = "")
-  lateinit var authKey: String
 }
 
 class TopicPost {
@@ -46,9 +51,11 @@ fun main(args: Array<String>) {
         println("Title: ${topicPage.topicTitle}")
         println("Link: ${topicPage.topicLink}")
         println("Rank: ${topicPage.topicRank}")
-        println("Current page: ${topicPage.currentPage}")
-        println("Total pages: ${topicPage.totalPages}")
         println("Auth key: ${topicPage.authKey}")
+
+        println(">>> NAVIGATION:")
+        println("Current page: ${topicPage.navigation.currentPage}")
+        println("Total pages: ${topicPage.navigation.totalPages}")
 
         println(">>> POSTS: ${topicPage.posts.size}")
         println(" -------------------- ")

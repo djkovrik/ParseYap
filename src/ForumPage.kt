@@ -5,12 +5,17 @@ class ForumPage {
   lateinit var forumTitle: String
   @Selector("a[href~=.*/forum\\d+/].title", attr = "href", defValue = "0")
   lateinit var forumId: String
+  @Selector("table[width=100%]")
+  lateinit var navigation: ForumNavigationPanel
+  @Selector("table tr:has(td.row4)")
+  lateinit var topics: List<Topic>
+}
+
+class ForumNavigationPanel {
   @Selector("td[nowrap=nowrap]", format = "\\[(\\d+)\\]", defValue = "0")
   lateinit var currentPage: String
   @Selector("td[nowrap=nowrap]", format = "(\\d+)", defValue = "0")
   lateinit var totalPages: String
-  @Selector("table tr:has(td.row4)")
-  lateinit var topics: List<Topic>
 }
 
 class Topic {
@@ -34,8 +39,10 @@ fun main(args: Array<String>) {
 
         println("Title: ${forumPage.forumTitle}")
         println("Link: ${forumPage.forumId}")
-        println("Current page: ${forumPage.currentPage}")
-        println("Total pages: ${forumPage.totalPages}")
+
+        println(">>> NAVIGATION:")
+        println("Current page: ${forumPage.navigation.currentPage}")
+        println("Total pages: ${forumPage.navigation.totalPages}")
 
         println(">>> TOPICS: ${forumPage.topics.size}")
 
