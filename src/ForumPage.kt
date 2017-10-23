@@ -5,6 +5,8 @@ class ForumPage {
   lateinit var forumTitle: String
   @Selector("a[href~=.*/forum\\d+/].title", attr = "href", defValue = "0")
   lateinit var forumId: String
+  @Selector("td[nowrap=nowrap]", format = "\\[(\\d+)\\]", defValue = "0")
+  lateinit var currentPage: String
   @Selector("td[nowrap=nowrap]", format = "(\\d+)", defValue = "0")
   lateinit var totalPages: String
   @Selector("table tr:has(td.row4)")
@@ -27,11 +29,12 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadForumPage(forumId = 2, startTopicNumber = 0, sortingMode = "last_post")
+      .loadForumPage(forumId = 2, startTopicNumber = 300, sortingMode = "last_post")
       .subscribe({ forumPage ->
 
         println("Title: ${forumPage.forumTitle}")
         println("Link: ${forumPage.forumId}")
+        println("Current page: ${forumPage.currentPage}")
         println("Total pages: ${forumPage.totalPages}")
 
         println(">>> TOPICS: ${forumPage.topics.size}")
