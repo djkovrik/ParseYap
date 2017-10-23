@@ -7,7 +7,9 @@ class TopicPage {
   lateinit var topicLink: String
   @Selector(".rating-value", defValue = "0")
   lateinit var topicRank: String
-  @Selector("td[nowrap=nowrap]:has(a[onclick~=multi_page_jump])", format = "(\\d+)", defValue = "1")
+  @Selector("td[nowrap=nowrap]:has(a[onclick])", format = "\\[(\\d+)\\]", defValue = "1")
+  lateinit var currentPage: String
+  @Selector("td[nowrap=nowrap]:has(a[onclick])", format = "(\\d+)", defValue = "1")
   lateinit var totalPages: String
   @Selector("table[id~=p_row_\\d+]:has(.normalname)")
   lateinit var posts: List<TopicPost>
@@ -38,12 +40,13 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadTopicPage(forumId = 1, topicId = 1665663, startPage = 0)
+      .loadTopicPage(forumId = 1, topicId = 1665663, startPage = 50)
       .subscribe({ topicPage ->
 
         println("Title: ${topicPage.topicTitle}")
         println("Link: ${topicPage.topicLink}")
         println("Rank: ${topicPage.topicRank}")
+        println("Current page: ${topicPage.currentPage}")
         println("Total pages: ${topicPage.totalPages}")
         println("Auth key: ${topicPage.authKey}")
 
