@@ -7,6 +7,8 @@ class TopicPage {
   lateinit var topicLink: String
   @Selector(".rating-value", defValue = "0")
   lateinit var topicRank: String
+  @Selector("td.bottommenu > font", defValue = "")
+  lateinit var isClosed: String
   @Selector("input[name~=auth_key]", attr = "outerHtml", format = "value=\"([a-z0-9]+)\"", defValue = "")
   lateinit var authKey: String
   @Selector("table.row3")
@@ -45,12 +47,13 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadTopicPage(forumId = 1, topicId = 1665663, startPage = 50)
+      .loadTopicPage(forumId = 5, topicId = 1680979, startPage = 0)
       .subscribe({ topicPage ->
 
         println("Title: ${topicPage.topicTitle}")
         println("Link: ${topicPage.topicLink}")
         println("Rank: ${topicPage.topicRank}")
+        println("Is closed: ${topicPage.isClosed}")
         println("Auth key: ${topicPage.authKey}")
 
         println(">>> NAVIGATION:")
