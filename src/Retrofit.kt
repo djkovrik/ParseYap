@@ -4,6 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 fun createRetrofit(): Retrofit =
     Retrofit.Builder()
@@ -31,4 +32,11 @@ interface YapLoader {
       @Path("forumId") forumId: Int,
       @Path("topicId") topicId: Int,
       @Path("startPage") startPage: Int): Single<TopicPage>
+
+  @GET(".")
+  fun loadActiveTopics(
+      @Query("act") act: String,
+      @Query("CODE") code: String,
+      @Query("searchid") searchid: String,
+      @Query("st") startTopicNumber: Int): Single<ActiveTopicsPage>
 }
