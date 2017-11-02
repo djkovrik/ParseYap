@@ -28,7 +28,6 @@ class ActiveTopic {
 
 fun main(args: Array<String>) {
 
-  // TODO() While using in app generate searchid for each session
   createRetrofit()
       .create(YapLoader::class.java)
       .loadActiveTopics(
