@@ -9,12 +9,16 @@ class ParsedPost(html: String,
                  val videosRaw: MutableList<String> = ArrayList()) {
 
   companion object {
-    private const val TEXT_SELECTOR = "postcolor"
+    private const val POST_TAG = "div"
+    private const val POST_TEXT_CLASS = "postcolor"
     private const val RATING_SELECTOR = "div[rel=rating]"
     private const val EDITED_TIME_SELECTOR = "span.edit"
     private const val CLIENT_SELECTOR = "span[style~=grey]"
     private const val EMOTICON_SRC_SELECTOR = "[src*=emoticons]"
     private const val EMOTICON_SELECTOR = "emoticons"
+    private const val WARNING_IMG_SELECTOR = "html/bot"
+    private const val WARNING_HEADER_SELECTOR = "td[align=center][vAlign=top]"
+    private const val WARNING_TEXT_SELECTOR = "td[vAlign=top]"
     private const val QUOTE_SELECTOR = "QUOTE"
     private const val SPOILER_SELECTOR = "SPOILER"
     private const val QUOTE_START_TEXT = "Цитата"
@@ -31,8 +35,9 @@ class ParsedPost(html: String,
         setOf("#root", "html", "head", "body", "table", "tbody", "tr", "br", "b", "i", "u")
     private val attrsToSkip = setOf("rating", "clear")
     private val contentWhitelist: Whitelist = Whitelist()
-        .addTags("i", "u", "b", "br", "img")
+        .addTags("i", "u", "b", "br", "img", "span")
         .addAttributes("img", "src")
+        .addAttributes("span", "style")
   }
 
   init {
@@ -53,10 +58,13 @@ class ParsedPost(html: String,
         }
         .forEach { element ->
           // Texts
-          if (element.hasClass(TEXT_SELECTOR)) {
+          if (element.tagName() == POST_TAG &&
+              element.className() == POST_TEXT_CLASS) {
             element.select(RATING_SELECTOR).remove()
             element.select(EDITED_TIME_SELECTOR).remove()
             element.select(CLIENT_SELECTOR).remove()
+            element.select(WARNING_HEADER_SELECTOR).remove()
+            element.select(WARNING_TEXT_SELECTOR).remove()
             element.select(IMG_TAG).not(EMOTICON_SRC_SELECTOR).remove()
 
             element.html().cleanExtraTags().trimLinebreakTags().apply {
@@ -94,7 +102,8 @@ class ParsedPost(html: String,
           // Images
           if (element.tagName() == IMG_TAG &&
               element.hasAttr(SRC_ATTR) &&
-              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR)) {
+              !element.attr(SRC_ATTR).contains(EMOTICON_SELECTOR) &&
+              !element.attr(SRC_ATTR).contains(WARNING_IMG_SELECTOR)) {
             images.add(element.attr(SRC_ATTR))
           }
 
@@ -117,18 +126,25 @@ class ParsedPost(html: String,
                 url = element.attr(HREF_ATTR),
                 title = element.text()))
           }
+
+          // Warnings
+          if (element.tagName() == TD_TAG &&
+              element.className() == POST_TEXT_CLASS) {
+            content.add(PostWarning(element.html()))
+          }
         }
   }
 
   fun printContent() {
     content.forEach {
       when (it) {
-        is PostText -> println("Post text: ${it.text}")
-        is PostQuote -> println("Quote block: ${it.text}")
-        is PostQuoteAuthor -> println("Quote author block: ${it.text}")
-        is PostHiddenText -> println("Spoiler text: ${it.text}")
-        is PostScript -> println("P.S.: ${it.text}")
-        is PostLink -> println("Link: ${it.url}, Link title: ${it.title}")
+        is PostText -> println(" > POST TEXT: ${it.text}")
+        is PostQuote -> println(" > QUOTE BLOCK: ${it.text}")
+        is PostQuoteAuthor -> println(" > QUOTE AUTHOR BLOCK: ${it.text}")
+        is PostHiddenText -> println(" > SPOILER: ${it.text}")
+        is PostScript -> println(" > P.S.: ${it.text}")
+        is PostLink -> println(" > LINK: ${it.url}, Link title: ${it.title}")
+        is PostWarning -> println(" > WARNING: ${it.text}")
       }
     }
 
@@ -168,3 +184,5 @@ class PostHiddenText(val text: String) : Content
 class PostScript(val text: String) : Content
 
 class PostLink(val url: String, val title: String) : Content
+
+class PostWarning(val text: String) : Content

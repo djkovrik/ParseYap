@@ -47,7 +47,7 @@ fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadTopicPage(forumId = 5, topicId = 1680979, startPage = 0)
+      .loadTopicPage(forumId = 5, topicId = 258273, startPage = 3050)
       .subscribe({ topicPage ->
 
         println("Title: ${topicPage.topicTitle}")
@@ -68,9 +68,9 @@ fun main(args: Array<String>) {
           println("Author profile: ${it.authorProfile}")
           println("Author avatar: ${it.authorAvatar}")
           println("Author messages count: ${it.authorMessagesCount}")
-          println("Post date: ${it.postDate}")
-          println("Post rank: ${it.postRank}")
-          println("Post id: ${it.postId}")
+          println("- Post date: ${it.postDate}")
+          println("- Post rank: ${it.postRank}")
+          println("- Post id: ${it.postId}")
 
           ParsedPost(it.postContent).printContent()
 
