@@ -13,7 +13,7 @@ class NewsHead {
 }
 
 class NewsContent {
-  @Selector("[id~=news_.*]", attr = "innerHtml", defValue = "Unknown") lateinit var description: String
+  @Selector("[id~=news_.*]", attr = "innerHtml", defValue = "") lateinit var description: String
   @Selector("img[src]", attr = "src") lateinit var images: List<String>
   @Selector("iframe[src]", attr = "src") lateinit var videos: List<String>
   @Selector("iframe[src]", attr = "outerHtml") lateinit var videosRaw: List<String>
@@ -21,7 +21,7 @@ class NewsContent {
 
 class NewsBottom {
   @Selector(".icon-user > a", defValue = "Unknown") lateinit var author: String
-  @Selector(".icon-user > a", attr = "href") lateinit var authorLink: String
+  @Selector(".icon-user > a", attr = "href", defValue = "") lateinit var authorLink: String
   @Selector(".icon-date", defValue = "Unknown") lateinit var date: String
   @Selector(".icon-forum > a", defValue = "Unknown") lateinit var forumName: String
   @Selector(".icon-forum > a", attr = "href", defValue = "") lateinit var forumLink: String

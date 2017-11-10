@@ -16,11 +16,11 @@ class ActiveTopicsNavigationPanel {
 
 class ActiveTopic {
   @Selector("a.subtitle", defValue = "Unknown") lateinit var title: String
-  @Selector("a.subtitle", attr = "href") lateinit var link: String
+  @Selector("a.subtitle", attr = "href", defValue = "") lateinit var link: String
   @Selector("img[src*=pinned]", attr = "src", defValue = "") lateinit var isPinned: String
   @Selector("img[src*=closed]", attr = "src", defValue = "") lateinit var isClosed: String
   @Selector("td[class~=row(2|4)] > a", defValue = "Unknown") lateinit var forumTitle: String
-  @Selector("td[class~=row(2|4)] > a", attr = "href") lateinit var forumLink: String
+  @Selector("td[class~=row(2|4)] > a", attr = "href", defValue = "") lateinit var forumLink: String
   @Selector("div.rating-short-value", defValue = "0") lateinit var rating: String
   @Selector("td.row4:matchesOwn(\\d+)", defValue = "0") lateinit var answers: String
   @Selector("span.desc", format = "([0-9\\.]+ - [0-9:]+)", defValue = "Unknown") lateinit var lastPostDate: String
@@ -33,7 +33,7 @@ fun main(args: Array<String>) {
       .loadActiveTopics(
           act = "Search",
           code = "getactive",
-          searchid= "d2a280145c686e07575b47d9b5208a6e",
+          searchid = "d2a280145c686e07575b47d9b5208a6e",
           startTopicNumber = 25)
       .subscribe({ loadedPage ->
 

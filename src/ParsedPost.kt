@@ -25,9 +25,7 @@ class ParsedPost(html: String,
     private const val IFRAME_TAG = "iframe"
     private const val IMG_TAG = "img"
     private const val TD_TAG = "td"
-    private const val A_TAG = "a"
     private const val SRC_ATTR = "src"
-    private const val HREF_ATTR = "href"
     private const val QUOTE_AUTHOR_MARKER = "@"
     private const val QUOTE_MARKER = "Цитата"
 
@@ -120,13 +118,6 @@ class ParsedPost(html: String,
                 text = element.html()))
           }
 
-          // Links
-          if (element.tagName() == A_TAG && element.text().isNotEmpty()) {
-            content.add(PostLink(
-                url = element.attr(HREF_ATTR),
-                title = element.text()))
-          }
-
           // Warnings
           if (element.tagName() == TD_TAG &&
               element.className() == POST_TEXT_CLASS) {
@@ -143,7 +134,6 @@ class ParsedPost(html: String,
         is PostQuoteAuthor -> println(" > QUOTE AUTHOR BLOCK: ${it.text}")
         is PostHiddenText -> println(" > SPOILER: ${it.text}")
         is PostScript -> println(" > P.S.: ${it.text}")
-        is PostLink -> println(" > LINK: ${it.url}, Link title: ${it.title}")
         is PostWarning -> println(" > WARNING: ${it.text}")
       }
     }
@@ -182,7 +172,5 @@ class PostQuoteAuthor(val text: String) : Content
 class PostHiddenText(val text: String) : Content
 
 class PostScript(val text: String) : Content
-
-class PostLink(val url: String, val title: String) : Content
 
 class PostWarning(val text: String) : Content
