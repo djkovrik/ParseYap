@@ -25,7 +25,7 @@ class NewsBottom {
   @Selector(".icon-date", defValue = "Unknown") lateinit var date: String
   @Selector(".icon-forum > a", defValue = "Unknown") lateinit var forumName: String
   @Selector(".icon-forum > a", attr = "href", defValue = "") lateinit var forumLink: String
-  @Selector("span", defValue = "0") lateinit var comments: String
+  @Selector("span", defValue = "0", format = "(\\d+)") lateinit var comments: String
 }
 
 fun main(args: Array<String>) {
