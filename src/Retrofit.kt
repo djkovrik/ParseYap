@@ -18,6 +18,9 @@ interface YapLoader {
   @GET("/st/{startPage}/")
   fun loadNews(@Path("startPage") startPage: Int): Single<News>
 
+  @GET("/st/{startPage}/")
+  fun loadIncubator(@Path("startPage") startPage: Int): Single<IncubatorPage>
+
   @GET("/forum")
   fun loadForumsList(): Single<Forums>
 

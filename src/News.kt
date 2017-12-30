@@ -9,7 +9,7 @@ class News {
 class NewsHead {
   @Selector(".subtitle", defValue = "Unknown") lateinit var title: String
   @Selector(".subtitle", attr = "href", defValue = "") lateinit var link: String
-  @Selector(".rating-short-value > a", defValue = "") lateinit var rating: String
+  @Selector(".rating-short-value > a", defValue = "0") lateinit var rating: String
 }
 
 class NewsContent {
@@ -19,13 +19,14 @@ class NewsContent {
   @Selector("iframe[src]", attr = "outerHtml") lateinit var videosRaw: List<String>
 }
 
+
 class NewsBottom {
   @Selector(".icon-user > a", defValue = "Unknown") lateinit var author: String
   @Selector(".icon-user > a", attr = "href", defValue = "") lateinit var authorLink: String
   @Selector(".icon-date", defValue = "Unknown") lateinit var date: String
   @Selector(".icon-forum > a", defValue = "Unknown") lateinit var forumName: String
   @Selector(".icon-forum > a", attr = "href", defValue = "") lateinit var forumLink: String
-  @Selector("span", defValue = "0", format = "(\\d+)") lateinit var comments: String
+  @Selector("span", format = "(\\d+)", defValue = "0") lateinit var comments: String
 }
 
 fun main(args: Array<String>) {
