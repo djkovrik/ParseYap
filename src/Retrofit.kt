@@ -13,6 +13,12 @@ fun createRetrofit(): Retrofit =
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .build()
 
+fun createRetrofitForIncubator(): Retrofit =
+    Retrofit.Builder()
+        .baseUrl("http://inkubator.yaplakal.com/")
+        .addConverterFactory(JspoonConverterFactory.create())
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        .build()
 
 interface YapLoader {
   @GET("/st/{startPage}/")
