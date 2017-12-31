@@ -1,9 +1,9 @@
 import pl.droidsonroids.jspoon.annotation.Selector
 
 class News {
-  @Selector(".newshead") lateinit var headers: List<NewsHead>
-  @Selector(".news-content") lateinit var contents: List<NewsContent>
-  @Selector(".newsbottom") lateinit var bottoms: List<NewsBottom>
+  @Selector("td.newshead") lateinit var headers: List<NewsHead>
+  @Selector("td.postcolor") lateinit var contents: List<NewsContent>
+  @Selector("td.holder") lateinit var bottoms: List<NewsBottom>
 }
 
 class NewsHead {
