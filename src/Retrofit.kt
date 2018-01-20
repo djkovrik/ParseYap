@@ -48,4 +48,10 @@ interface YapLoader {
       @Query("CODE") code: String,
       @Query("searchid") searchid: String,
       @Query("st") startTopicNumber: Int): Single<ActiveTopicsPage>
+
+  @GET(".")
+  fun loadEmoticons(
+      @Query("act") act: String,
+      @Query("CODE") code: String
+  ): Single<EmojiList>
 }
