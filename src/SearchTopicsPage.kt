@@ -3,6 +3,8 @@ import pl.droidsonroids.jspoon.annotation.Selector
 class SearchTopicsPage {
     @Selector(value = "a:matchesOwn(\\d+)", defValue = "")
     lateinit var hasNextPage: String
+    @Selector(value = "a[href~=searchid]", attr = "href", format = "searchid=([\\d\\w]+)", defValue = "")
+    lateinit var searchId: String
     @Selector("table tr:has(td.row4)")
     lateinit var topics: List<SearchTopicItem>
 }
@@ -25,6 +27,7 @@ fun main(args: Array<String>) {
             .subscribe({ loadedPage ->
 
                 println("Has next page: ${loadedPage.hasNextPage}")
+                println("SearchId: ${loadedPage.searchId}")
 
                 println(">>> TOPICS: ${loadedPage.topics.size}\n")
 
