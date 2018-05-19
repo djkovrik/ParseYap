@@ -61,13 +61,22 @@ class TopicPost {
   lateinit var postContent: String
   @Selector("a[name~=entry]", attr = "outerHtml", format = "entry(\\d+)", defValue = "0")
   lateinit var postId: String
+  @Selector("a.title:containsOwn(#)")
+  var tags: List<TopicTag> = emptyList()
+}
+
+class TopicTag {
+  @Selector("a.title:containsOwn(#)")
+  lateinit var tag: String
+  @Selector("a.title:containsOwn(#)", attr = "href")
+  lateinit var tagLink: String
 }
 
 fun main(args: Array<String>) {
 
   createRetrofit()
       .create(YapLoader::class.java)
-      .loadTopicPage(forumId = 5, topicId = 258273, startPage = 3050)
+      .loadTopicPage(forumId = 2, topicId = 1788232, startPage = 0)
       .subscribe({ topicPage ->
 
         println("Title: ${topicPage.topicTitle}")
@@ -90,6 +99,13 @@ fun main(args: Array<String>) {
           println("- Post date: ${it.postDate}")
           println("- Post rank: ${it.postRank}")
           println("- Post id: ${it.postId}")
+
+          if (it.tags.isNotEmpty()) {
+            it.tags.forEach {
+              println("Tag: ${it.tag}")
+              println("Tag link: ${it.tagLink}")
+            }
+          }
 
           ParsedPost(it.postContent).printContent()
 
