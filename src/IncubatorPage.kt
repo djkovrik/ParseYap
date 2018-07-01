@@ -1,9 +1,9 @@
 import pl.droidsonroids.jspoon.annotation.Selector
 
 class IncubatorPage {
-  @Selector("td.newshead") lateinit var headers: List<IncubatorHead>
-  @Selector("td.postcolor") lateinit var contents: List<IncubatorContent>
-  @Selector("td.holder") lateinit var bottoms: List<IncubatorBottom>
+  @Selector("td[class=newshead][id^=topic_]") lateinit var headers: List<IncubatorHead>
+  @Selector("td[class=postcolor news-content][id^=news_]") lateinit var contents: List<IncubatorContent>
+  @Selector("td[class=holder newsbottom]") lateinit var bottoms: List<IncubatorBottom>
 }
 
 class IncubatorHead {
