@@ -14,9 +14,9 @@ class NewsHead {
 
 class NewsContent {
   @Selector("[id~=news_.*]", attr = "innerHtml", defValue = "") lateinit var description: String
-  @Selector("img[src]", attr = "src") lateinit var images: List<String>
-  @Selector("iframe[src]", attr = "src") lateinit var videos: List<String>
-  @Selector("iframe[src]", attr = "outerHtml") lateinit var videosRaw: List<String>
+  @Selector("img[src]", attr = "src") var images: List<String> = emptyList()
+  @Selector("iframe[src]", attr = "src") var videos: List<String> = emptyList()
+  @Selector("iframe[src]", attr = "outerHtml") var videosRaw: List<String> = emptyList()
 }
 
 
