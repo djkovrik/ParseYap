@@ -1,4 +1,6 @@
 import io.reactivex.Single
+import network.HtmlFixerInterceptor
+import okhttp3.OkHttpClient
 import pl.droidsonroids.retrofit2.JspoonConverterFactory
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -8,6 +10,7 @@ import retrofit2.http.*
 fun createRetrofit(): Retrofit =
         Retrofit.Builder()
                 .baseUrl("http://www.yaplakal.com/")
+                .client(createSiteClient())
                 .addConverterFactory(JspoonConverterFactory.create())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -16,9 +19,16 @@ fun createRetrofit(): Retrofit =
 fun createRetrofitForIncubator(): Retrofit =
         Retrofit.Builder()
                 .baseUrl("http://inkubator.yaplakal.com/")
+                .client(createSiteClient())
                 .addConverterFactory(JspoonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
+
+fun createSiteClient(): OkHttpClient =
+    OkHttpClient
+        .Builder()
+        .addInterceptor(HtmlFixerInterceptor())
+        .build()
 
 interface YapLoader {
     @GET("/st/{startPage}/")
