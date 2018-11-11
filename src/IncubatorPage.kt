@@ -17,6 +17,7 @@ class IncubatorContent {
   @Selector("img[src]", attr = "src") var images: List<String> = emptyList()
   @Selector("iframe[src]", attr = "src") var videos: List<String> = emptyList()
   @Selector("iframe[src]", attr = "outerHtml") var videosRaw: List<String> = emptyList()
+  @Selector(value = ".news-content", attr = "outerHtml", defValue = "", regex = "Begin Video:(.*)-->") var videosLinks: List<String> = emptyList()
 }
 
 
@@ -51,6 +52,7 @@ fun main(args: Array<String>) {
           println("Images: ${topics.contents[index].images}")
           println("Videos: ${topics.contents[index].videos}")
           println("Videos raw: ${topics.contents[index].videosRaw}")
+          println("Videos link: ${topics.contents[index].videosLinks}")
           println("Author: ${topics.bottoms[index].author}")
           println("Author link: ${topics.bottoms[index].authorLink}")
           println("Date: ${topics.bottoms[index].date}")

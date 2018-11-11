@@ -13,10 +13,11 @@ class NewsHead {
 }
 
 class NewsContent {
-  @Selector("[id~=news_.*]", attr = "innerHtml", defValue = "") lateinit var description: String
-  @Selector("img[src]", attr = "src") var images: List<String> = emptyList()
-  @Selector("iframe[src]", attr = "src") var videos: List<String> = emptyList()
-  @Selector("iframe[src]", attr = "outerHtml") var videosRaw: List<String> = emptyList()
+  @Selector(value = "[id~=news_.*]", attr = "innerHtml", defValue = "") lateinit var description: String
+  @Selector(value = "img[src]", attr = "src") var images: List<String> = emptyList()
+  @Selector(value = "iframe[src]", attr = "src") var videos: List<String> = emptyList()
+  @Selector(value = "iframe[src]", attr = "outerHtml") var videosRaw: List<String> = emptyList()
+  @Selector(value = ".news-content", attr = "outerHtml", defValue = "", regex = "Begin Video:(.*)-->") var videosLinks: List<String> = emptyList()
 }
 
 
@@ -51,6 +52,7 @@ fun main(args: Array<String>) {
           println("Images: ${news.contents[index].images}")
           println("Videos: ${news.contents[index].videos}")
           println("Videos raw: ${news.contents[index].videosRaw}")
+          println("Videos links: ${news.contents[index].videosLinks}")
           println("Author: ${news.bottoms[index].author}")
           println("Author link: ${news.bottoms[index].authorLink}")
           println("Date: ${news.bottoms[index].date}")
